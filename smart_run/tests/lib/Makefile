@@ -15,11 +15,11 @@
 #*/
 #*/
 # the compiler toolset setting
-CC      = ${TOOL_EXTENSION}/riscv64-unknown-elf-gcc
-AS      = ${TOOL_EXTENSION}/riscv64-unknown-elf-as
-LINK    = ${TOOL_EXTENSION}/riscv64-unknown-elf-ld
-OBJDUMP = ${TOOL_EXTENSION}/riscv64-unknown-elf-objdump
-OBJCOPY = ${TOOL_EXTENSION}/riscv64-unknown-elf-objcopy
+CC      = ${TOOL_EXTENSION}/riscv64-xuantie-elf-gcc
+AS      = ${TOOL_EXTENSION}/riscv64-xuantie-elf-as
+LINK    = ${TOOL_EXTENSION}/riscv64-xuantie-elf-ld
+OBJDUMP = ${TOOL_EXTENSION}/riscv64-xuantie-elf-objdump
+OBJCOPY = ${TOOL_EXTENSION}/riscv64-xuantie-elf-objcopy
 CONVERT =../tests/bin/Srec2vmem
 
 SSRC = $(wildcard *.S)
@@ -83,8 +83,8 @@ ifeq (${CASENAME}, csr_rw)
 endif
 LINKFLAGS = -Tlinker.lcf -nostartfiles ${FLAG_MARCH} ${FLAG_ABI}
 
-# LINKLIBS  = -L${TOOL_PATH}/lib/gcc/riscv64-unknown-elf/8.1.0/rv32imac
-# LINKLIBS += -L${TOOL_PATH}/riscv64-unknown-elf/lib/rv32imac
+# LINKLIBS  = -L${TOOL_PATH}/lib/gcc/riscv64-xuantie-elf/8.1.0/rv32imac
+# LINKLIBS += -L${TOOL_PATH}/riscv64-xuantie-elf/lib/rv32imac
 # LINKLIBS += -L${TOOL_PATH}/riscv32-unknown-elf/lib
 
 LINKLIBS = -lc -lgcc

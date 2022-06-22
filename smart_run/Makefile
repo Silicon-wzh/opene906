@@ -19,7 +19,7 @@ include ./setup/env_check.mk
 ################################################################################
 # Simulation related
 ################################################################################
-SIM = iverilog
+SIM = vcs
 DUMP = off
 
 ifeq ($(DUMP), on)
@@ -38,19 +38,19 @@ SIMULATOR_OPT := -sverilog -full64 -kdb -lca -debug_access +nospecify +notimingc
 SIMULATOR_DEF := +define+no_warning +define+TSMC_NO_WARNING
 SIMULATOR_LOG := -l comp.vcs.log
 else 
-    ifeq ($(SIM), nc) 
-    TIMESCALE := -timescale 1ns/100fs
-    SIMULATOR_OPT := +v2k -sysv +sv +access+wrc +notimingcheck -default_ext verilog -elaborate +tcl+../setup/nc.tcl
-    SIMULATOR_DEF := +define+no_warning +define+TSMC_NO_WARNING +define+VMC +define+NC_SIM 
-    SIMULATOR_LOG := -l comp.nc.log
-    else
-    ifeq ($(SIM), iverilog)
-      TIMESCALE := 
-      SIMULATOR_OPT := -o xuantie_core.vvp -Diverilog=1 -g2012
-      SIMULATOR_DEF := -DIVERILOG_SIM
-      SIMULATOR_LOG := 
-    endif
-    endif
+ifeq ($(SIM), nc) 
+	TIMESCALE := -timescale 1ns/100fs
+	SIMULATOR_OPT := +v2k -sysv +sv +access+wrc +notimingcheck -default_ext verilog -elaborate +tcl+../setup/nc.tcl
+	SIMULATOR_DEF := +define+no_warning +define+TSMC_NO_WARNING +define+VMC +define+NC_SIM 
+	SIMULATOR_LOG := -l comp.nc.log
+else
+ifeq ($(SIM), iverilog)
+	  TIMESCALE := 
+	  SIMULATOR_OPT := -o xuantie_core.vvp -Diverilog=1 -g2012
+	  SIMULATOR_DEF := -DIVERILOG_SIM
+	  SIMULATOR_LOG := 
+endif
+endif
 endif
 
 ifeq ($(SIM), iverilog)
@@ -66,15 +66,15 @@ ifeq ($(SIM), vcs)
 	@make -s cleansim
 	@cd ./work && vcs $(SIMULATOR_OPT) $(TIMESCALE) $(SIMULATOR_DEF) $(SIM_FILELIST) $(SIM_DUMP) $(SIMULATOR_LOG) 
 else 
-	ifeq ($(SIM), nc)
+ifeq ($(SIM), nc)
 	@cd ./work && irun $(SIMULATOR_OPT) $(TIMESCALE) $(SIMULATOR_DEF) $(SIM_FILELIST) $(SIM_DUMP) $(SIMULATOR_LOG) 
-	else
-		ifeq ($(SIM), iverilog)
-	  @cd ./work && iverilog $(TIMESCALE) $(SIMULATOR_OPT) $(SIMULATOR_DEF) $(SIM_FILELIST) $(SIM_DUMP) $(SIMULATOR_LOG)
-		else
-	  @echo "  [THead-smart] Please specify SIM = vcs to use VCS, or SIM = nc to use irun ..."
-		endif
-	endif 
+else
+ifeq ($(SIM), iverilog)
+	@cd ./work && iverilog $(TIMESCALE) $(SIMULATOR_OPT) $(SIMULATOR_DEF) $(SIM_FILELIST) $(SIM_DUMP) $(SIMULATOR_LOG)
+else
+	@echo "  [THead-smart] Please specify SIM = vcs to use VCS, or SIM = nc to use irun ..."
+endif
+endif 
 endif 
 
 cleansim:
@@ -84,25 +84,25 @@ cleansim:
 # Cases related
 ################################################################################
 showcase:
-	@echo "  Case lists:" \
-	@for case in $(CASE_LIST) ; do \
-          echo "    $$case"; \
-        done
+	@echo "  Case lists:"
+	@(for case in $(CASE_LIST) ; do \
+		  echo "    $$case"; \
+		done)
 
 buildcase: tool-chain-chk
 ifeq ($(CASE),)
 	$(error Please specify CASE=xxx on the command line, like: \
-        $(newline)   > make buildcase CASE=xxx... \
-        $(newline)   The list of valid cases can be obtained by executing: \
-        $(newline)   > make showcase ...)
+		$(newline)   > make buildcase CASE=xxx... \
+		$(newline)   The list of valid cases can be obtained by executing: \
+		$(newline)   > make showcase ...)
 endif
 ifeq ($(findstring $(CASE), $(CASE_LIST)), $(CASE))
 	@make -s cleancase
 	@make -s $(CASE)_build
 else
 	$(error Argument CASE=xxx is not valid: \
-        $(newline)   The list of valid cases can be obtained by executing: \
-        $(newline)   > make showcase ...)
+		$(newline)   The list of valid cases can be obtained by executing: \
+		$(newline)   > make showcase ...)
 endif
 
 
@@ -116,9 +116,9 @@ cleancase:
 runcase:
 ifeq ($(CASE),)
 	$(error Please specify CASE=xxx on the command line, like: \
-        $(newline)   > make buildcase CASE=xxx... \
-        $(newline)   The list of valid cases can be obtained by executing: \
-        $(newline)   > make showcase ...)
+		$(newline)   > make buildcase CASE=xxx... \
+		$(newline)   The list of valid cases can be obtained by executing: \
+		$(newline)   > make showcase ...)
 endif
 ifeq ($(findstring $(CASE), $(CASE_LIST)), $(CASE))
 	@make -s compile
@@ -126,20 +126,23 @@ ifeq ($(findstring $(CASE), $(CASE_LIST)), $(CASE))
 ifeq ($(SIM), vcs)
 	cd ./work && ./simv -l run.vcs.log
 else
-        ifeq ($(SIM), nc)	
+ifeq ($(SIM), nc)   
 	cd ./work && irun -R -l run.irun.log
-        else
+else
 	cd ./work && vvp xuantie_core.vvp -l run.iverilog.log
-        endif
+endif
 endif
 else
 	$(error Argument CASE=xxx is not valid: \
-        $(newline)   The list of valid cases can be obtained by executing: \
-        $(newline)   > make showcase ...)
+		$(newline)   The list of valid cases can be obtained by executing: \
+		$(newline)   > make showcase ...)
 endif
 
 # Execute all cases
 regress:
+	@(if [ ! -d "./tests/regress/regress_result/" ]; then \
+		mkdir -p "./tests/regress/regress_result/"; \
+	 fi)
 	rm -rf ./tests/regress/regress_result/*
 	@(for case in $(CASE_LIST) ; do \
 	 rm -rf ./work/* ; \

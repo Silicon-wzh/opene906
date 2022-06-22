@@ -18,8 +18,8 @@ int main (void)
 {
 
 //Section 1: Hello World!
-  printf("\nHello Friend!\n");
-  printf("Welcome to T-HEAD World!\n");
+  printf("\e[1;36m\nHello Friend!\e[0m\n");
+  printf("\e[1;32mWelcome to T-HEAD World!\e[0m\n");
 
 //Section 2: Embeded ASM in C 
   int a;
@@ -28,9 +28,12 @@ int main (void)
   a=1;
   b=2;
   c=0;
+
+  printf("\e[1;33m");
   printf("\na is %d!\n",a);
   printf("b is %d!\n",b);
   printf("c is %d!\n",c);
+  printf("\n\e[0m");
 
 asm(
     "mv  x5,%[a]\n"
@@ -43,10 +46,10 @@ asm(
     );
 
 if(c == 3)
-  printf("!!! PASS !!!");
+  printf("\e[1;32m!!! PASS !!!\e[0m\n");
 else
-  printf("!!! FAIL !!!");
-  printf("after ASM c is changed to %d!\n",c);
+  printf("\e[1;31m!!! FAIL !!!\e[0m\n");
+  printf("after ASM c is changed to %d!\n\n",c);
 
   return 0;
 }
