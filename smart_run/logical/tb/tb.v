@@ -259,7 +259,8 @@ begin
        $dumpfile("test.vcd");
        $dumpvars;  
     `else
-      $fsdbDumpvars();
+      $fsdbDumpfile("./rtl_sim.fsdb");
+      $fsdbDumpvars("+all");
     `endif
   `endif
 end

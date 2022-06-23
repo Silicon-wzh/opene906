@@ -40,7 +40,7 @@ SIMULATOR_LOG := -l comp.vcs.log
 else 
 ifeq ($(SIM), nc) 
 	TIMESCALE := -timescale 1ns/100fs
-	SIMULATOR_OPT := +v2k -sysv +sv +access+wrc +notimingcheck -default_ext verilog -elaborate +tcl+../setup/nc.tcl
+	SIMULATOR_OPT := +v2k -sysv +sv +access+wrc +notimingcheck -default_ext verilog -elaborate +tcl+../setup/nc.tcl -kdb -lca
 	SIMULATOR_DEF := +define+no_warning +define+TSMC_NO_WARNING +define+VMC +define+NC_SIM 
 	SIMULATOR_LOG := -l comp.nc.log
 else
@@ -137,6 +137,9 @@ else
 		$(newline)   The list of valid cases can be obtained by executing: \
 		$(newline)   > make showcase ...)
 endif
+
+verdi:
+	@cd ./work && verdi -elab ./simv.daidir/kdb -ssf *.fsdb
 
 # Execute all cases
 regress:
