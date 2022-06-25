@@ -102,7 +102,7 @@ format STDOUT_TOP=
 .
 format STDOUT=
 @<<<<<<<<<@<<<<<<<<<<<<<<<<<<<<<@>>>>>>>>>>>>
-$Block    $Pattern      $Result
+$Block,    $Pattern,      $Result
 .
 
 #($not_run1,$pass1,$fail1,$total1)=($not_run,$pass,$fail,$total);
